@@ -1,30 +1,63 @@
+from tkinter import *
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
 import matplotlib.lines as mlines
 from config import INFINITY
 from adversary import get_optimal_path_info
 
+master = None
+canvas = None
+figure = None
+
 
 def draw_utility_sequence(u, T):
-    plt.axhline(0, color='gray')
-    plt.axvline(T, color='gray')
+    global master
+    master = Tk()
+    master.title("Utility sequence")
+
+    scale = Scale(master, from_=0, to=30, orient=HORIZONTAL, command=lambda v: draw_figure(u, int(v)))
+    scale.set(T)
+    scale.pack(side=TOP, fill=BOTH, expand=True)
+
+    mainloop()
+
+
+def draw_figure(u, T, maxT=30):
+    global master, canvas, figure
+    if figure is None:
+        figure = Figure(figsize=(5, 5), dpi=100)
+    else:
+        figure.clf()
+    p = figure.add_subplot(111)
+
+    p.axhline(0, color='gray')
+    p.axvline(T, color='gray')
+    p.set_xlim(0, 30)
+    p.set_ylim(-4, 70)
 
     points = np.asarray([[i, u[i]] for i in range(INFINITY)])
-    plt.plot(points[:, 0], points[:, 1], "-o")
+    p.plot(points[:, 0], points[:, 1], "-o")
 
     path_info = get_optimal_path_info(u, T)
-    newline((path_info['t1'], u[path_info['t1']]), (path_info['t2'], u[path_info['t2']]), color="red")
+    newline(figure, (path_info['t1'], u[path_info['t1']]), (path_info['t2'], u[path_info['t2']]), color="red")
 
-    plt.xlim(0, 30)
-    plt.ylim(-4, 70)
-    plt.show()
+    if canvas is None:
+        canvas = FigureCanvasTkAgg(figure, master)
+        toolbar = NavigationToolbar2TkAgg(canvas, master)
+        tk_canvas = canvas.get_tk_widget()
+        tk_canvas.pack(side=TOP, fill=BOTH, expand=True)
+
+    canvas.draw()
 
 
-def newline(p1, p2, color=None):
-    ax = plt.gca()
+def newline(figure, p1, p2, color=None):
+    ax = figure.gca()
     xmin, xmax = ax.get_xbound()
 
-    if(p2[0] == p1[0]):
+    if p2[0] == p1[0]:
         xmin = xmax = p1[0]
         ymin, ymax = ax.get_ybound()
     else:
