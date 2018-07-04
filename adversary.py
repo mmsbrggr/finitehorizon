@@ -10,7 +10,7 @@ def get_optimal_path_info(u, T):
         for t2 in range(T, INFINITY):
             if t1 != t2:
                 value = u[t1] + ((T - t1)/(t2 - t1)) * (u[t2] - u[t1])
-                if opt is None or value <= opt:
+                if opt is None or value < opt:
                     opt = value
                     opt_t1 = t1
                     opt_t2 = t2

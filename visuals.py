@@ -33,13 +33,13 @@ def draw_figure(u, T, maxT=30):
         figure.clf()
     p = figure.add_subplot(111)
 
-    p.axhline(0, color='gray')
-    p.axvline(T, color='gray')
+    p.axhline(0, color='black', linewidth=1)
+    p.axvline(T, color='gray', linewidth=1)
     p.set_xlim(0, 30)
     p.set_ylim(-4, 70)
 
     points = np.asarray([[i, u[i]] for i in range(INFINITY)])
-    p.plot(points[:, 0], points[:, 1], "-o")
+    p.plot(points[:, 0], points[:, 1], ".-", color='black')
 
     path_info = get_optimal_path_info(u, T)
     newline(figure, (path_info['t1'], u[path_info['t1']]), (path_info['t2'], u[path_info['t2']]), color="red")
@@ -64,6 +64,6 @@ def newline(figure, p1, p2, color=None):
         ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
         ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
 
-    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color=color)
+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color=color, linewidth=1)
     ax.add_line(l)
     return l

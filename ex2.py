@@ -8,10 +8,10 @@ number_nodes = 4
 graph = np.full((number_nodes, number_nodes), -np.inf)
 graph[0, 1] = -1
 graph[0, 2] = 2
-graph[0, 3] = 3
+graph[0, 3] = 5
 graph[1, 0] = -1
 graph[2, 0] = 2
-graph[3, 3] = 3
+graph[3, 3] = 5
 
 
 def get_path(i):
