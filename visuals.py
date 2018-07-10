@@ -28,21 +28,12 @@ def draw_utility_sequence(u, T):
 def draw_figure(u, T, maxT=30):
     global master, canvas, figure
     if figure is None:
-        figure = Figure(figsize=(5, 5), dpi=100)
+        figure = Figure(figsize=(5, 10), dpi=100)
     else:
         figure.clf()
-    p = figure.add_subplot(111)
 
-    p.axhline(0, color='black', linewidth=1)
-    p.axvline(T, color='gray', linewidth=1)
-    p.set_xlim(0, 30)
-    p.set_ylim(-4, 70)
-
-    points = np.asarray([[i, u[i]] for i in range(INFINITY)])
-    p.plot(points[:, 0], points[:, 1], ".-", color='black')
-
-    path_info = get_optimal_path_info(u, T)
-    newline(figure, (path_info['t1'], u[path_info['t1']]), (path_info['t2'], u[path_info['t2']]), color="red")
+    draw_component(211, [e[0] for e in u], T, maxT)
+    draw_component(212, [e[1] for e in u], T, maxT)
 
     if canvas is None:
         canvas = FigureCanvasTkAgg(figure, master)
@@ -51,6 +42,22 @@ def draw_figure(u, T, maxT=30):
         tk_canvas.pack(side=TOP, fill=BOTH, expand=True)
 
     canvas.draw()
+
+
+def draw_component(component, u, T, maxT=30):
+    global figure
+    p = figure.add_subplot(component)
+
+    p.axhline(0, color='black', linewidth=1)
+    p.axvline(T, color='gray', linewidth=1)
+    p.set_xlim(0, maxT)
+    p.set_ylim(-4, 10)
+
+    points = np.asarray([[i, u[i]] for i in range(INFINITY)])
+    p.plot(points[:, 0], points[:, 1], ".-", color='black')
+
+    path_info = get_optimal_path_info(u, T)
+    newline(figure, (path_info['t1'], u[path_info['t1']]), (path_info['t2'], u[path_info['t2']]), color="red")
 
 
 def newline(figure, p1, p2, color=None):
